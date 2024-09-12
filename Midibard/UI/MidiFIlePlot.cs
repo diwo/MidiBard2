@@ -127,6 +127,15 @@ public partial class PluginUI
         //ImGui.SetCursorPos(ImGui.GetWindowContentRegionMin());
         if (ImPlot.BeginPlot(songName + "###midiTrackPlot", ImGuiUtil.GetWindowContentRegion(), ImPlotFlags.NoTitle))
         {
+            ImPlot.GetInputMap().Fit = ImGuiMouseButton.Middle;
+            if (ImPlot.IsPlotHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+            {
+                var songDuration = MidiBard.CurrentPlayback.GetDuration<MetricTimeSpan>();
+                MetricTimeSpan ts = TimeSpan.FromSeconds(Math.Clamp(ImPlot.GetPlotMousePos().x, 0, songDuration.GetTotalSeconds()));
+                Control.MidiControl.MidiPlayerControl.SetTime(ts);
+                IPC.IPCHandles.SetPlaybackTime(ts);
+            }
+
             ImPlot.SetupAxisLimits(ImAxis.X1, 0, 20, ImPlotCond.Once);
             ImPlot.SetupAxisLimits(ImAxis.Y1, 42, 91, ImPlotCond.Once);
             ImPlot.SetupAxisTicks(ImAxis.Y1, 0, 127, 128, noteNames, false);
