@@ -27,6 +27,7 @@ using MidiBard.Control.CharacterControl;
 using static MidiBard.ImGuiUtil;
 using MidiBard.IPC;
 using static Dalamud.api;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace MidiBard;
 
@@ -75,7 +76,8 @@ public partial class PluginUI
         }
 
 		var PlayPauseIcon = MidiBard.IsPlaying || FilePlayback.IsWaiting ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
-		if (ImGuiUtil.IconButton(PlayPauseIcon, "playpause"))
+		var isPlayPauseWithSpaceKey = UIInputData.Instance()->IsKeyPressed(SeVirtualKey.SPACE) && MidiBard.CurrentInstrument != 0;
+		if (ImGuiUtil.IconButton(PlayPauseIcon, "playpause") || isPlayPauseWithSpaceKey)
 		{
 			PluginLog.Debug($"PlayPause pressed. wasplaying: {MidiBard.IsPlaying}");
 			MidiPlayerControl.PlayPause();
