@@ -74,7 +74,7 @@ public partial class PluginUI
 			return;
         }
 
-		var PlayPauseIcon = MidiBard.IsPlaying ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
+		var PlayPauseIcon = MidiBard.IsPlaying || FilePlayback.IsWaiting ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
 		if (ImGuiUtil.IconButton(PlayPauseIcon, "playpause"))
 		{
 			PluginLog.Debug($"PlayPause pressed. wasplaying: {MidiBard.IsPlaying}");
