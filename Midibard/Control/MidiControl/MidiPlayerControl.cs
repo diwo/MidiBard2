@@ -96,7 +96,7 @@ internal static class MidiPlayerControl
 	{
 		if (FilePlayback.IsWaiting)
 		{
-			FilePlayback.SkipWaiting();
+			FilePlayback.CancelWaiting();
 		}
 		else
 		{
