@@ -56,7 +56,7 @@ public static class FilePlayback
 		playback.Speed = config.PlaySpeed;
 		playback.Finished += Playback_Finished;
 		PluginLog.Debug($"[LoadPlayback] -> {path} OK! in {stopwatch.Elapsed.TotalMilliseconds} ms");
-		api.ChatGui.Print(String.Format("[MidiBard 2] Now Playing: {0}", playback.DisplayName));
+		// api.ChatGui.Print(String.Format("[MidiBard 2] Now Playing: {0}", playback.DisplayName));
 		MidiBard.PluginIpc.MidiBardPlayingFileNamePub.SendMessage(playback.DisplayName);
 		return playback;
 	}
