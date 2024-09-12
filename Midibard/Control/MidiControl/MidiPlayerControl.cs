@@ -126,7 +126,7 @@ internal static class MidiPlayerControl
 		Lrc.Stop();
 		_stat = e_stat.Stopped;
 		var songIndex = GetSongIndex(PlaylistManager.CurrentSongIndex, true);
-		PlaylistManager.LoadPlayback(songIndex, MidiBard.IsPlaying || startPlaying);
+		PlaylistManager.LoadPlayback(songIndex, startPlaying);
 	}
 
 	internal static void Prev()
@@ -134,7 +134,7 @@ internal static class MidiPlayerControl
 		Lrc.Stop();
 		_stat = e_stat.Stopped;
 		var songIndex = GetSongIndex(PlaylistManager.CurrentSongIndex, false);
-		PlaylistManager.LoadPlayback(songIndex, MidiBard.IsPlaying);
+		PlaylistManager.LoadPlayback(songIndex);
 
 	}
 
