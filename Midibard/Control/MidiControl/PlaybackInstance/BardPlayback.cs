@@ -129,7 +129,7 @@ internal sealed class BardPlayback : Playback
 
 	internal string DisplayName { get; init; }
 
-	private static void PreparePlaybackData(MidiFile file, out TempoMap tempoMap, out TrackChunk[] trackChunks, out TrackInfo[] trackInfos, out TimedEventWithMetadata[] timedEventWithMetadata)
+	public static void PreparePlaybackData(MidiFile file, out TempoMap tempoMap, out TrackChunk[] trackChunks, out TrackInfo[] trackInfos, out TimedEventWithMetadata[] timedEventWithMetadata)
 	{
 		file = MidiPreprocessor.RealignMidiFile(file);
         tempoMap = TryGetTempoNap(file);

@@ -126,6 +126,13 @@ public partial class PluginUI
 					PlaylistManager.Clear();
 				}
 			}
+			if (ImGui.BeginPopup("ClearPlaylist_options")) {
+				if (ImGui.MenuItem("Remove songs with more than 1 track", null, false)) {
+					PlaylistManager.RemoveSongsWithTracksCount(2);
+				}
+				ImGui.EndPopup();
+			}
+			ImGui.OpenPopupOnItemClick("ClearPlaylist_options", ImGuiPopupFlags.MouseButtonRight);
 
 			SameLine();
 			var fontAwesomeIcon = MidiBard.config.UseStandalonePlaylistWindow

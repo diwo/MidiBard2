@@ -100,6 +100,17 @@ static class PlaylistManager
 		IPCHandles.SyncPlaylist();
 	}
 
+	public static void RemoveSongsWithTracksCount(int atLeast)
+	{
+		FilePathList.RemoveAll(filePath => {
+			var midiFile = LoadSongFile(filePath.FilePath);
+			Control.MidiControl.PlaybackInstance.BardPlayback.PreparePlaybackData(midiFile, out var _, out var _, out var trackInfos, out var _);
+			return trackInfos.Length >= atLeast;
+		});
+		CurrentSongIndex = -1;
+		IPCHandles.SyncPlaylist();
+	}
+
 
 	public static void RemoveSync(int index)
 	{
