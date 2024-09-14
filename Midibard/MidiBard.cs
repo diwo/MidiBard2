@@ -147,7 +147,7 @@ public class MidiBard : IDalamudPlugin
         api.Framework.Update += OnFrameworkUpdate;
         api.Framework.Update += Lrc.Tick;
 
-        if (api.PluginInterface.IsDev) Ui.Open();
+        if (api.PluginInterface.IsDev && MidiBard.CurrentInstrument != 0) Ui.Open();
     }
 
     private void OnFrameworkUpdate(IFramework framework)
