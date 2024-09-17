@@ -125,7 +125,7 @@ public partial class PluginUI
         }
 
         //ImGui.SetCursorPos(ImGui.GetWindowContentRegionMin());
-        if (ImPlot.BeginPlot(songName + "###midiTrackPlot", ImGuiUtil.GetWindowContentRegion(), ImPlotFlags.NoTitle))
+        if (ImPlot.BeginPlot(songName + "###midiTrackPlot", ImGuiUtil.GetWindowContentRegion(), ImPlotFlags.NoTitle | ImPlotFlags.NoLegend | ImPlotFlags.NoMouseText))
         {
             ImPlot.GetInputMap().Fit = ImGuiMouseButton.Middle;
             if (ImPlot.IsPlotHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
@@ -137,15 +137,17 @@ public partial class PluginUI
             }
 
             ImPlot.SetupAxisLimits(ImAxis.X1, 0, 20, ImPlotCond.Once);
-            ImPlot.SetupAxisLimits(ImAxis.Y1, 42, 91, ImPlotCond.Once);
+            ImPlot.SetupAxisLimits(ImAxis.Y1, 48 - 1.5, 48 + 37 + 1.5, ImPlotCond.Once);
             ImPlot.SetupAxisTicks(ImAxis.Y1, 0, 127, 128, noteNames, false);
+            ImPlot.SetupAxis(ImAxis.X1, null, ImPlotAxisFlags.NoGridLines);
+            ImPlot.SetupAxis(ImAxis.Y1, null, ImPlotAxisFlags.NoGridLines | ImPlotAxisFlags.NoTickLabels | ImPlotAxisFlags.Lock);
 
             if (setNextLimit)
             {
                 try
                 {
                     if (!MidiBard.config.LockPlot)
-                        ImPlot.SetupAxisLimits(ImAxis.X1, 0, _plotData.Select(i => i.trackInfo.DurationMetric.GetTotalSeconds()).Max(), ImPlotCond.Always);
+                        ImPlot.SetupAxisLimits(ImAxis.X1, -1, _plotData.Select(i => i.trackInfo.DurationMetric.GetTotalSeconds()).Max() + 1, ImPlotCond.Always);
                     setNextLimit = false;
                 }
                 catch (Exception e)
@@ -184,6 +186,8 @@ public partial class PluginUI
 
             if (_plotData?.Any() == true && MidiBard.CurrentPlayback != null)
             {
+                DrawBarLines(drawList);
+
                 var legendInfoList = new List<(string trackName, Vector4 color, int index)>();
 
                 foreach (var (trackInfo, notes) in _plotData.OrderBy(i => i.trackInfo.IsPlaying))
@@ -245,6 +249,28 @@ public partial class PluginUI
         var firstOrDefault = MidiBard.Instruments.FirstOrDefault(i => i.ProgramNumber == programNumber);
         instrument = firstOrDefault;
         return firstOrDefault != default;
+    }
+
+    private void DrawBarLines(ImDrawListPtr drawList)
+    {
+        TempoMap tempoMap = MidiBard.CurrentPlayback!.TempoMap;
+        BarBeatTicksTimeSpan songEnd = MidiBard.CurrentPlayback.GetDuration<BarBeatTicksTimeSpan>();
+        BarBeatTicksTimeSpan fourBars = new(4);
+
+        int count = 0;
+        for (ITimeSpan ts = new BarBeatTicksTimeSpan(0);
+                ts.CompareTo(songEnd.Add(fourBars, TimeSpanMode.TimeLength)) < 0;
+                ts = ts.Add(fourBars, TimeSpanMode.TimeLength))
+        {
+            double t = TimeConverter.ConvertTo<MetricTimeSpan>(ts, tempoMap).GetTotalSeconds();
+            bool highlight = count % 4 == 0;
+            drawList.AddLine(
+                ImPlot.PlotToPixels(t, ImPlot.GetPlotLimits().Y.Min),
+                ImPlot.PlotToPixels(t, ImPlot.GetPlotLimits().Y.Max),
+                ImGui.ColorConvertFloat4ToU32(ImGuiColors.ParsedGrey.Fade(highlight ? 0.6f : 0.8f)),
+                ImGuiHelpers.GlobalScale * (highlight ? 1.5f : 1.0f));
+            count += 1;
+        }
     }
 
     private static void DrawCurrentPlayTime(ImDrawListPtr drawList, double timelinePos)
