@@ -594,6 +594,13 @@ public partial class PluginUI
 				}
 			}
 
+			if (ImGui.IsItemHovered() && IsMouseClicked(ImGuiMouseButton.Left))
+			{
+				try {
+					ImGui.SetClipboardText(PlaylistManager.FilePathList[i].FileName);
+				} catch (Exception) {}
+			}
+
 			//OpenPopupOnItemClick($"##playlistRightClick", ImGuiPopupFlags.MouseButtonRight);
 
 			if (BeginPopup($"##playlistRightClick"))
