@@ -55,6 +55,7 @@ public partial class PluginUI
 
     private bool setNextLimit;
     private double timeWindow = 10;
+    private MetricTimeSpan barOneStart = TimeSpan.FromSeconds(0);
     private void DrawPlotWindow()
     {
         var framebg = ImGui.GetColorU32(ImGuiCol.FrameBg);
@@ -127,13 +128,20 @@ public partial class PluginUI
         //ImGui.SetCursorPos(ImGui.GetWindowContentRegionMin());
         if (ImPlot.BeginPlot(songName + "###midiTrackPlot", ImGuiUtil.GetWindowContentRegion(), ImPlotFlags.NoTitle | ImPlotFlags.NoLegend | ImPlotFlags.NoMouseText))
         {
-            ImPlot.GetInputMap().Fit = ImGuiMouseButton.Middle;
-            if (ImPlot.IsPlotHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+            ImPlot.GetInputMap().Fit = ImGuiMouseButton.Right;
+            if (ImPlot.IsPlotHovered())
             {
                 var songDuration = MidiBard.CurrentPlayback.GetDuration<MetricTimeSpan>();
                 MetricTimeSpan ts = TimeSpan.FromSeconds(Math.Clamp(ImPlot.GetPlotMousePos().x, 0, songDuration.GetTotalSeconds()));
-                Control.MidiControl.MidiPlayerControl.SetTime(ts);
-                IPC.IPCHandles.SetPlaybackTime(ts);
+
+                if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+                {
+                    Control.MidiControl.MidiPlayerControl.SetTime(ts);
+                    IPC.IPCHandles.SetPlaybackTime(ts);
+                }
+
+                if (ImGui.IsMouseClicked(ImGuiMouseButton.Middle))
+                    barOneStart = ts;
             }
 
             ImPlot.SetupAxisLimits(ImAxis.X1, 0, 20, ImPlotCond.Once);
@@ -254,23 +262,43 @@ public partial class PluginUI
     private void DrawBarLines(ImDrawListPtr drawList)
     {
         TempoMap tempoMap = MidiBard.CurrentPlayback!.TempoMap;
+        BarBeatTicksTimeSpan barOne = TimeConverter.ConvertTo<BarBeatTicksTimeSpan>(barOneStart, tempoMap);
+        BarBeatTicksTimeSpan songStart = new(0);
         BarBeatTicksTimeSpan songEnd = MidiBard.CurrentPlayback.GetDuration<BarBeatTicksTimeSpan>();
         BarBeatTicksTimeSpan fourBars = new(4);
 
-        int count = 0;
-        for (ITimeSpan ts = new BarBeatTicksTimeSpan(0);
-                ts.CompareTo(songEnd.Add(fourBars, TimeSpanMode.TimeLength)) < 0;
-                ts = ts.Add(fourBars, TimeSpanMode.TimeLength))
+        int countForward = 0;
+        for (ITimeSpan tsForward = barOne;
+                tsForward.CompareTo(songEnd.Add(fourBars, TimeSpanMode.TimeLength)) < 0;
+                tsForward = tsForward.Add(fourBars, TimeSpanMode.TimeLength))
         {
-            double t = TimeConverter.ConvertTo<MetricTimeSpan>(ts, tempoMap).GetTotalSeconds();
-            bool highlight = count % 4 == 0;
-            drawList.AddLine(
-                ImPlot.PlotToPixels(t, ImPlot.GetPlotLimits().Y.Min),
-                ImPlot.PlotToPixels(t, ImPlot.GetPlotLimits().Y.Max),
-                ImGui.ColorConvertFloat4ToU32(ImGuiColors.ParsedGrey.Fade(highlight ? 0.6f : 0.8f)),
-                ImGuiHelpers.GlobalScale * (highlight ? 1.5f : 1.0f));
-            count += 1;
+            double t = TimeConverter.ConvertTo<MetricTimeSpan>(tsForward, tempoMap).GetTotalSeconds();
+            bool highlight = countForward % 4 == 0;
+            DrawBarLines(drawList, t, highlight);
+            countForward += 1;
         }
+
+        int countBackward = 0;
+        ITimeSpan tsBackward = barOne;
+        while (tsBackward.CompareTo(songStart.Add(fourBars, TimeSpanMode.TimeLength)) > 0)
+        {
+            countBackward += 1;
+            tsBackward = tsBackward.Subtract(fourBars, TimeSpanMode.TimeLength);
+            double t = TimeConverter.ConvertTo<MetricTimeSpan>(tsBackward, tempoMap).GetTotalSeconds();
+            bool highlight = countBackward % 4 == 0;
+            DrawBarLines(drawList, t, highlight);
+        }
+
+        DrawBarLines(drawList, 0, highlight: false);
+    }
+
+    private void DrawBarLines(ImDrawListPtr drawList, double x, bool highlight = false)
+    {
+        drawList.AddLine(
+            ImPlot.PlotToPixels(x, ImPlot.GetPlotLimits().Y.Min),
+            ImPlot.PlotToPixels(x, ImPlot.GetPlotLimits().Y.Max),
+            ImGui.ColorConvertFloat4ToU32(ImGuiColors.ParsedGrey.Fade(highlight ? 0.6f : 0.8f)),
+            ImGuiHelpers.GlobalScale * (highlight ? 1.5f : 1.0f));
     }
 
     private static void DrawCurrentPlayTime(ImDrawListPtr drawList, double timelinePos)
@@ -318,6 +346,7 @@ public partial class PluginUI
                     .ToArray();
 
                 setNextLimit = true;
+                barOneStart = TimeSpan.FromSeconds(0);
             }
             catch (Exception e)
             {
