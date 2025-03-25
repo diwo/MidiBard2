@@ -35,14 +35,15 @@ using MidiBard.Control.MidiControl.PlaybackInstance;
 using MidiBard.IPC;
 using MidiBard.Managers;
 using MidiBard.Managers.Agents;
+using MidiBard; 
 using MidiBard.Util;
-using playlibnamespace;
 using Dalamud.Plugin.Services;
 using JetBrains.Annotations;
 using MidiBard.Util.Lyrics;
 using MidiBard2.IPC;
 using static Dalamud.api;
 using Dalamud.Utility;
+using Midibard.Playlib;
 
 namespace MidiBard;
 
@@ -52,7 +53,7 @@ public class MidiBard : IDalamudPlugin
     internal static readonly string VersionString = Version?.ToString();
     public static Configuration config { get; internal set; }
     internal static PluginUI Ui { get; set; }
-    [CanBeNull] internal static BardPlayback CurrentPlayback { get; set; }
+    internal static BardPlayback CurrentPlayback { get; set; }
     internal static AgentMetronome AgentMetronome { get; set; }
     internal static AgentPerformance AgentPerformance { get; set; }
     internal static EnsembleManager EnsembleManager { get; set; }
@@ -130,10 +131,10 @@ public class MidiBard : IDalamudPlugin
         AgentPerformance = new AgentPerformance((IntPtr)pAgentPerformance);
         EnsembleManager = new EnsembleManager();
 
-#if DEBUG
-			_ = NetworkManager.Instance;
-			_ = Testhooks.Instance;
-#endif
+//#if DEBUG
+//			_ = NetworkManager.Instance;
+//			_ = Testhooks.Instance;
+//#endif
         api.ChatGui.ChatMessage += PartyChatCommand.OnChatMessage;
 
 		BardPlayDevice = new BardPlayDevice();
@@ -179,7 +180,7 @@ public class MidiBard : IDalamudPlugin
 
         if (AgentPerformance.InPerformanceMode)
         {
-            playlib.ConfirmReceiveReadyCheck();
+            Playlib.ConfirmReceiveReadyCheck();
 		}
     }
 

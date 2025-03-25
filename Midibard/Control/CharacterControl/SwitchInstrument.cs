@@ -23,7 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Lumina.Excel.Sheets;
 using MidiBard.Util;
-using playlibnamespace;
+using Midibard.Playlib;
 using static Dalamud.api;
 
 namespace MidiBard.Control.CharacterControl;
@@ -57,7 +57,7 @@ internal static class SwitchInstrument
 			var instrument = MidiBard.Instruments[instrumentId];
 			if (instrument.IsGuitar)
 			{
-				playlib.GuitarSwitchTone(instrument.GuitarTone);
+				Playlib.GuitarSwitchTone(instrument.GuitarTone);
 				return;
 			}
 		}

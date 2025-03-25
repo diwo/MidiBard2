@@ -36,7 +36,6 @@ namespace MidiBard;
 public class PlaylistContainer
 {
 	private static Regex metadataParser = new Regex(@"^\[(?<key>.+?):(?<value>.+)\]$");
-	[CanBeNull]
 	public static PlaylistContainer FromFile(string filePath, bool createIfNotExist = false)
 	{
 		if (File.Exists(filePath)) {

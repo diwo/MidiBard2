@@ -31,7 +31,7 @@ using MidiBard.Control.MidiControl;
 using MidiBard.Managers.Agents;
 using MidiBard.IPC;
 using MidiBard.Structs;
-using playlibnamespace;
+using Midibard.Playlib;
 using static MidiBard.MidiBard;
 using static Dalamud.api;
 
@@ -78,15 +78,15 @@ internal class EnsembleManager : IDisposable
                 MidiBard.AgentMetronome.Struct->AgentInterface.Show();
             }
 
-            playlibnamespace.playlib.BeginReadyCheck();
-            playlibnamespace.playlib.ConfirmBeginReadyCheck();
+            Playlib.BeginReadyCheck();
+            Playlib.ConfirmBeginReadyCheck();
         }
     }
 
     internal static unsafe void StopEnsemble()
     {
-        playlibnamespace.playlib.BeginReadyCheck();
-		playlibnamespace.playlib.SendAction("SelectYesno", 3, 0);
+        Playlib.BeginReadyCheck();
+		Playlib.SendAction("SelectYesno", 3, 0);
     }
 
     //private unsafe IntPtr HandleUpdateMetronome(IntPtr agentMetronome, byte currentBeat)

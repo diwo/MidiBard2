@@ -26,7 +26,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Game;
 using Dalamud.Logging;
-using playlibnamespace;
+using Midibard;
 using static Dalamud.api;
 
 namespace MidiBard.Managers;

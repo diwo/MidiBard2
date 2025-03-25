@@ -23,7 +23,7 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using MidiBard.Managers;
 using MidiBard.Managers.Agents;
-using playlibnamespace;
+using Midibard.Playlib;
 using static Dalamud.api;
 
 namespace MidiBard.Control;
@@ -261,7 +261,7 @@ public class BardPlayDevice : IOutputDevice
         }
 
         // only release a key when it been pressing
-        if (playlib.ReleaseKey(noteNum))
+        if (Playlib.ReleaseKey(noteNum))
         {
             PluginLog.Debug($"[KeyUp  ] {noteNum}");
             agentPerformance.Struct->CurrentPressingNote = -100;
@@ -278,14 +278,14 @@ public class BardPlayDevice : IOutputDevice
         if (agentPerformance.noteNumber - 39 == noteNum)
         {
             // release repeated note in order to press it again
-            if (playlib.ReleaseKey(noteNum))
+            if (Playlib.ReleaseKey(noteNum))
             {
                 agentPerformance.Struct->CurrentPressingNote = -100;
                 PluginLog.Verbose($"[ReKeyUp] {noteNum}");
             }
         }
 
-        if (playlib.PressKey(noteNum, ref agentPerformance.Struct->NoteOffset, ref agentPerformance.Struct->OctaveOffset))
+        if (Playlib.PressKey(noteNum, ref agentPerformance.Struct->NoteOffset, ref agentPerformance.Struct->OctaveOffset))
         {
             agentPerformance.Struct->CurrentPressingNote = noteNum + 39;
             PluginLog.Debug($"[KeyDown] {noteNum}");
@@ -298,14 +298,14 @@ public class BardPlayDevice : IOutputDevice
     private void ApplyToneByTrack(int trackIndex)
     {
         int tone = MidiBard.config.TrackStatus[trackIndex].Tone;
-        playlib.GuitarSwitchTone(tone);
+        Playlib.GuitarSwitchTone(tone);
     }
 
     private void ApplyToneByChannel(FourBitNumber channel)
     {
         CurrentChannel = channel;
         if (!TryGetToneFromProgram(Channels[channel].Program, out var tone)) return;
-        playlib.GuitarSwitchTone(tone);
+        Playlib.GuitarSwitchTone(tone);
     }
 
     private void ProcessProgramChange(ProgramChangeEvent programChangeEvent)
