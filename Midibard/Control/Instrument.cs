@@ -36,7 +36,7 @@ public class Instrument
         FFXIVProgramName = Row.GetGameProgramName();
         GeneralMidiProgramName = ProgramNumber.GetGMProgramName();
         InstrumentString = $"{(row.RowId == 0 ? "None" : $"{row.Instrument.ToDalamudString().TextValue} ({row.Name})")}";
-        IconTextureWrap = TextureManager.Get((uint)row.Order);
+        IconTextureWrap = TextureManager.Get((uint)row.Icon);
     }
     public Perform Row { get; }
     public bool IsGuitar { get; }
