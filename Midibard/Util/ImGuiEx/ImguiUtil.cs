@@ -21,12 +21,12 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Dalamud.Bindings.ImGui;
+using static Dalamud.Bindings.ImGui.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Utility;
 using Dalamud.Logging;
-using ImGuiNET;
-using static ImGuiNET.ImGui;
 using static Dalamud.api;
 
 

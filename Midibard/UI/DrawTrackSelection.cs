@@ -18,10 +18,10 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.GameFonts;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 using static MidiBard.ImGuiUtil;
 using MidiBard.Control.CharacterControl;
 using Dalamud.Logging;

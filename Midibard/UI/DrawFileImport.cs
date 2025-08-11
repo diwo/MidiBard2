@@ -26,7 +26,6 @@ using Dalamud.Game.ClientState.Keys;
 using Dalamud.Interface;
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Logging;
-using ImGuiNET;
 using Microsoft.Win32;
 using Dalamud;
 using MidiBard.Managers.Ipc;

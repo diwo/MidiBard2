@@ -23,7 +23,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dalamud.Interface;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using MidiBard.Control.MidiControl;
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Utility;
@@ -31,7 +31,7 @@ using MidiBard.IPC;
 using MidiBard2.Resources;
 using MidiBard.UI.Win32;
 using MidiBard.Util;
-using static ImGuiNET.ImGui;
+using static Dalamud.Bindings.ImGui.ImGui;
 using static MidiBard.ImGuiUtil;
 using static Dalamud.api;
 
@@ -78,10 +78,10 @@ public partial class PluginUI
 
 			if (!IsImportRunning) {
 				if (ImGui.BeginPopup("OpenFileDialog_selection")) {
-					if (ImGui.MenuItem(Language.w32_file_dialog, null, MidiBard.config.useLegacyFileDialog)) {
+					if (ImGui.MenuItem(Language.w32_file_dialog, MidiBard.config.useLegacyFileDialog)) {
 						MidiBard.config.useLegacyFileDialog = true;
 					}
-					else if (ImGui.MenuItem(Language.imgui_file_dialog, null, !MidiBard.config.useLegacyFileDialog)) {
+					else if (ImGui.MenuItem(Language.imgui_file_dialog, !MidiBard.config.useLegacyFileDialog)) {
 						MidiBard.config.useLegacyFileDialog = false;
 					}
 
@@ -127,7 +127,7 @@ public partial class PluginUI
 				}
 			}
 			if (ImGui.BeginPopup("ClearPlaylist_options")) {
-				if (ImGui.MenuItem("Remove songs with more than 1 track", null, false)) {
+				if (ImGui.MenuItem("Remove songs with more than 1 track", false)) {
 					PlaylistManager.RemoveSongsWithTracksCount(2);
 				}
 				ImGui.EndPopup();
@@ -496,7 +496,7 @@ public partial class PluginUI
 		}
 
 		if (beginChild) {
-			if (BeginTable(str_id: "##PlaylistTable", column: 3,
+			if (BeginTable(strId: "##PlaylistTable", column: 3,
 				    flags: ImGuiTableFlags.RowBg | ImGuiTableFlags.PadOuterX |
 				           ImGuiTableFlags.NoSavedSettings | ImGuiTableFlags.BordersInnerV, GetWindowSize())) {
 				TableSetupColumn("\ue035", ImGuiTableColumnFlags.WidthFixed);
@@ -505,7 +505,7 @@ public partial class PluginUI
 
 				ImGuiListClipperPtr clipper;
 				unsafe {
-					clipper = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper_ImGuiListClipper());
+					clipper = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper());
 				}
 
 				if (MidiBard.config.enableSearching && !string.IsNullOrEmpty(PlaylistSearchString)) {

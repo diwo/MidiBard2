@@ -22,12 +22,12 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using MidiBard.IPC;
 using MidiBard.Managers;
 using MidiBard2.Resources;
 using MidiBard.Util;
-using static ImGuiNET.ImGui;
+using static Dalamud.Bindings.ImGui.ImGui;
 using static MidiBard2.Resources.Language;
 using static Dalamud.api;
 
@@ -231,7 +231,7 @@ public partial class PluginUI
                 {
                     if (instrument.Row.RowId == 0) continue;
                     TableNextColumn();
-                    Image(instrument.IconTextureWrap.GetWrapOrEmpty().ImGuiHandle, new Vector2(GetFrameHeight()));
+                    Image(instrument.IconTextureWrap.GetWrapOrEmpty().Handle, new Vector2(GetFrameHeight()));
                     TableNextColumn();
                     AlignTextToFramePadding();
                     TextUnformatted(instrument.FFXIVDisplayName);

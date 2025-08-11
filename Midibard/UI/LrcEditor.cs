@@ -6,10 +6,11 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
+using Dalamud.Bindings.ImGui;
+using static Dalamud.Bindings.ImGui.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 using Lumina.Excel.Sheets;
 using Melanchall.DryWetMidi.Interaction;
 using MidiBard.Control.MidiControl.PlaybackInstance;
@@ -17,7 +18,6 @@ using MidiBard.IPC;
 using MidiBard.UI.Win32;
 using MidiBard.Util;
 using MidiBard.Util.Lyrics;
-using static ImGuiNET.ImGui;
 using static MidiBard.ImGuiUtil;
 using static Dalamud.api;
 using Dalamud.Utility;
@@ -388,7 +388,7 @@ public class LrcEditor
                             if (BeginDragDropSource())
                             {
                                 DragDropSource = (i, entry.JsonClone());
-                                SetDragDropPayload("dragdropTime", nint.Zero, 0);
+                                SetDragDropPayload("dragdropTime", ReadOnlySpan<byte>.Empty);
                                 PushFont(UiBuilder.MonoFont);
                                 TextUnformatted($"{Lrc.ToLrcTime(DragDropSource.Item2.TimeStamp),10} ");
                                 PopFont();

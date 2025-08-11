@@ -21,12 +21,12 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Dalamud.Bindings.ImPlot;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Logging;
-using ImGuiNET;
-using ImPlotNET;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
@@ -42,10 +42,10 @@ namespace MidiBard;
 
 public partial class PluginUI
 {
-    static Vector4 HSVToRGB(float h, float s, float v, float a = 1)
+    static unsafe Vector4 HSVToRGB(float h, float s, float v, float a = 1)
     {
         Vector4 c;
-        ImGui.ColorConvertHSVtoRGB(h, s, v, out c.X, out c.Y, out c.Z);
+        ImGui.ColorConvertHSVtoRGB(h, s, v, &c.X, &c.Y, &c.Z);
         c.W = a;
         return c;
     }
@@ -132,7 +132,7 @@ public partial class PluginUI
             if (ImPlot.IsPlotHovered())
             {
                 var songDuration = MidiBard.CurrentPlayback.GetDuration<MetricTimeSpan>();
-                MetricTimeSpan ts = TimeSpan.FromSeconds(Math.Clamp(ImPlot.GetPlotMousePos().x, 0, songDuration.GetTotalSeconds()));
+                MetricTimeSpan ts = TimeSpan.FromSeconds(Math.Clamp(ImPlot.GetPlotMousePos().X, 0, songDuration.GetTotalSeconds()));
 
                 if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                 {
@@ -147,8 +147,8 @@ public partial class PluginUI
             ImPlot.SetupAxisLimits(ImAxis.X1, 0, 20, ImPlotCond.Once);
             ImPlot.SetupAxisLimits(ImAxis.Y1, 48 - 1.5, 48 + 37 + 1.5, ImPlotCond.Once);
             ImPlot.SetupAxisTicks(ImAxis.Y1, 0, 127, 128, noteNames, false);
-            ImPlot.SetupAxis(ImAxis.X1, null, ImPlotAxisFlags.NoGridLines);
-            ImPlot.SetupAxis(ImAxis.Y1, null, ImPlotAxisFlags.NoGridLines | ImPlotAxisFlags.NoTickLabels | ImPlotAxisFlags.Lock);
+            ImPlot.SetupAxis(ImAxis.X1, (byte*)null, ImPlotAxisFlags.NoGridLines);
+            ImPlot.SetupAxis(ImAxis.Y1, (byte*)null, ImPlotAxisFlags.NoGridLines | ImPlotAxisFlags.NoTickLabels | ImPlotAxisFlags.Lock);
 
             if (setNextLimit)
             {
@@ -205,7 +205,7 @@ public partial class PluginUI
                         var c = System.Numerics.Vector4.One;
                         try
                         {
-                            ImGui.ColorConvertHSVtoRGB(trackInfo.Index / (float)MidiBard.CurrentPlayback.TrackInfos.Length, 0.8f, 1, out c.X, out c.Y, out c.Z);
+                            ImGui.ColorConvertHSVtoRGB(trackInfo.Index / (float)MidiBard.CurrentPlayback.TrackInfos.Length, 0.8f, 1, &c.X, &c.Y, &c.Z);
                             if (!trackInfo.IsPlaying) c.W = 0.2f;
                         }
                         catch (Exception e)

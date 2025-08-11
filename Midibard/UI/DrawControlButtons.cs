@@ -16,10 +16,10 @@
 // This code is written by akira0245 and was originally used in the MidiBard project. Any usage of this code must prominently credit the author, akira0245, and indicate that it was originally used in the MidiBard project.
 
 using System;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Logging;
 using Dalamud.Plugin;
-using ImGuiNET;
 using MidiBard.Control.MidiControl;
 using MidiBard.Managers;
 using MidiBard2.Resources;

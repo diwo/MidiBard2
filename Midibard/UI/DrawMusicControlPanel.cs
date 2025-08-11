@@ -21,13 +21,13 @@ using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Logging;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Melanchall.DryWetMidi.Interaction;
 using MidiBard.Control.CharacterControl;
 using MidiBard.Control.MidiControl;
 using MidiBard.IPC;
 using MidiBard.Util;
-using static ImGuiNET.ImGui;
+using static Dalamud.Bindings.ImGui.ImGui;
 using MidiBard.Util.Lyrics;
 using MidiBard.Managers.Ipc;
 using static MidiBard.ImGuiUtil;
@@ -272,7 +272,7 @@ public partial class PluginUI
 			{
 				var instrument = MidiBard.Instruments[i];
 				GetWindowDrawList().ChannelsSetCurrent(1);
-				Image(instrument.IconTextureWrap.GetWrapOrEmpty().ImGuiHandle, new Vector2(GetTextLineHeightWithSpacing()));
+				Image(instrument.IconTextureWrap.GetWrapOrEmpty().Handle, new Vector2(GetTextLineHeightWithSpacing()));
 				SameLine();
 				GetWindowDrawList().ChannelsSetCurrent(0);
 				AlignTextToFramePadding();

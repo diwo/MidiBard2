@@ -18,8 +18,8 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Utility;
-using ImGuiNET;
 using Melanchall.DryWetMidi.Interaction;
 using MidiBard.Control.MidiControl;
 using MidiBard2.Resources;

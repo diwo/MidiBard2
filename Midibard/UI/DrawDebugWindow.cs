@@ -26,6 +26,8 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Dalamud;
+using Dalamud.Bindings.ImGui;
+using static Dalamud.Bindings.ImGui.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.ImGuiFileDialog;
@@ -36,8 +38,6 @@ using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Common.Configuration;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImGuiNET;
-using ImPlotNET;
 using Lumina.Excel.Sheets;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
@@ -49,7 +49,6 @@ using MidiBard.Managers.Agents;
 using MidiBard.Managers.Ipc;
 using MidiBard.UI;
 using MidiBard.Util;
-using static ImGuiNET.ImGui;
 using static MidiBard.MidiBard;
 
 namespace MidiBard
@@ -242,7 +241,7 @@ namespace MidiBard
 					}
 					catch (Exception e)
 					{
-						PluginLog.Error(e.ToString());
+						api.PluginLog.Error(e.ToString());
 					}
 
 
@@ -560,7 +559,7 @@ namespace MidiBard
 
 					Dummy(Vector2.Zero);
 					var framework = Framework.Instance();
-					var configBase = framework->SystemConfig.CommonSystemConfig.ConfigBase;
+					var configBase = framework->SystemConfig.SystemConfigBase;
 					var configBaseConfigCount = configBase.ConfigCount;
 					//Util.ShowObject(configBase);
 					if (Button("logconfig"))
@@ -571,7 +570,7 @@ namespace MidiBard
 							try
 							{
 								var entry = configBase.ConfigEntry[i++];
-								PluginLog.Information(
+								api.PluginLog.Information(
 									$"[{entry.Index:000}] {entry.Type} {(entry.Type != 1 ? "\t" : "")}{MemoryHelper.ReadStringNullTerminated((IntPtr)(entry.Name)),-40}" +
 									(entry.Type != 1 ? $"{entry.Value.UInt,-10}{entry.Value.Float,-10}" : ""));
 								if (entry.Index >= configBaseConfigCount - 1)
@@ -585,7 +584,7 @@ namespace MidiBard
 							}
 						}
 
-						PluginLog.Information(configBaseConfigCount.ToString());
+						api.PluginLog.Information(configBaseConfigCount.ToString());
 					}
 				}
 				End();

@@ -22,7 +22,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Interface;
-using ImGuiNET;
 
 namespace MidiBard.Util
 {
